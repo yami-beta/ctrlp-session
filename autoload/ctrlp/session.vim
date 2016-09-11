@@ -69,7 +69,7 @@ function! ctrlp#session#accept(mode, str) abort
     " update session name
     let s:current_session_name = a:str
     " close all current buffer
-    execute 'silent bufdo bdelete'
+    execute 'silent bufdo bwipeout'
     execute 'source ' . session_file
   endif
 endfunction
