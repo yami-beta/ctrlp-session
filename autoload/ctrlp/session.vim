@@ -36,6 +36,7 @@ function! ctrlp#session#save(session_name) abort
     endif
   endif
   execute 'silent mksession! ' . session_file
+  let s:current_session_name = session_name
 endfunction
 
 function! ctrlp#session#completion(...) abort
