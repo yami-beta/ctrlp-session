@@ -40,7 +40,8 @@ function! ctrlp#session#save(session_name) abort
 endfunction
 
 function! ctrlp#session#completion(...) abort
-  return map(s:get_session_list(), 'fnamemodify(v:val, ":p:t:r")')
+  let list =  [getcwd() . '.vim'] + s:get_session_list()
+  return map(list, 'fnamemodify(v:val, ":p:t:r")')
 endfunction
 
 let g:ctrlp_ext_var = add(get(g:, 'ctrlp_ext_vars', []), {
