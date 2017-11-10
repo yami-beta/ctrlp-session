@@ -47,6 +47,7 @@ endfunction
 let g:ctrlp_ext_var = add(get(g:, 'ctrlp_ext_vars', []), {
       \ 'init': 'ctrlp#session#init()',
       \ 'accept': 'ctrlp#session#accept',
+      \ 'exit': 'ctrlp#session#exit()',
       \ 'lname': 'session extension',
       \ 'sname': 'session',
       \ 'type': 'path',
@@ -58,14 +59,25 @@ function! ctrlp#session#id() abort
   return s:id
 endfunction
 
+function! s:mapkey() abort
+  nnoremap <buffer> <c-d> :call ctrlp#session#accept('d', ctrlp#getcline())<cr>
+endfunction
+
+function! s:unmapkey() abort
+  if mapcheck('<c-d>', 'n') !=# ''
+    nunmap <buffer> <c-d>
+  endif
+endfunction
+
 function! ctrlp#session#init(...) abort
+  call s:mapkey()
   return map(s:get_session_list(), 'fnamemodify(v:val, ":p:t:r")')
 endfunction
 
 function! ctrlp#session#accept(mode, str) abort
   call ctrlp#exit()
   let session_file = s:get_session_file_path(a:str)
-  if a:mode == 'h'
+  if a:mode == 'd'
     call ctrlp#session#delete(a:str)
   else
     " update session name
@@ -74,6 +86,10 @@ function! ctrlp#session#accept(mode, str) abort
     execute 'silent bufdo bwipeout'
     execute 'source ' . session_file
   endif
+endfunction
+
+function! ctrlp#session#exit() abort
+  call s:unmapkey()
 endfunction
 
 let &cpo = s:save_cpo
